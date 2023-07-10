@@ -6,11 +6,17 @@ import { useCallback, useEffect, useState } from "react";
 import * as Font from "expo-font";
 import AppNavigator from "./navigation/AppNavigator";
 import { View } from "react-native";
+import { Provider } from "react-redux";
+import { persistor, store } from "./store/store";
+import { PersistGate } from "redux-persist/integration/react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const [appIsLoaded, setAppIsLoaded] = useState(false);
+
+  // AsyncStorage.clear();
 
   useEffect(() => {
     const prepare = async () => {
@@ -50,9 +56,13 @@ export default function App() {
   }
 
   return (
-    <SafeAreaProvider style={styles.container} onLayout={onLayout}>
-      <AppNavigator />
-    </SafeAreaProvider>
+    <Provider store={store}>
+      <PersistGate persistor={persistor}>
+        <SafeAreaProvider style={styles.container} onLayout={onLayout}>
+          <AppNavigator />
+        </SafeAreaProvider>
+      </PersistGate>
+    </Provider>
   );
 }
 
